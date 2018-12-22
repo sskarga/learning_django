@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}List of Address - {{ block.super }}{% endblock %}
+{% block body %}
+<h1>List of Address</h1>
+{% for parent in parents %}
+    <a href="{% url 'location:list' parent.id %}">{{ parent.name }}</a> |
+{% endfor %}
+    <br/>
+    <hr/>
+    <a href="{% url 'location:create' parent.id %}">[ Create ]</a>
+    <br/>
+<table>
+  <tr>
+    <th>Location</th>
+    <th>Action</th>
+  </tr>
+
+  {% for address in object_list %}
+      <tr>
+        <td>
+            {% if address.level < 2 %}
+                <a href="{% url 'location:list' address.id %}">{{ address.name }}</a>
+            {% else %}
+                {{ address.name }}
+            {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'location:update' address.id %}">Update</a> |
+            <a href="{% url 'location:delete' address.id %}">Delete</a>
+        </td>
+      </tr>
+  {% empty %}
+      <tr>
+        <td>empty</td>
+        <td>-</td>
+      </tr>
+
+  {% endfor %}
+</table>
+
+{% if is_paginated %}
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock %}

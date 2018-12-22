@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Delete Address - {{ block.super }}{% endblock %}
+{% block body %}
+<h1>Delete Address</h1>
+
+<form action='.' method='POST'>{% csrf_token %}
+    <h1>Do you want to delete the loacation "{{ object.name }}"?</h1>
+    <p><input type='submit' value='Yes' />  <a href='../../'>Cancel</a></p>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Create Address - {{ block.super }}{% endblock %}
+{% block body %}
+
+
+<form action='.' method='POST'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><input type='submit' value='Save' /> <a href='../../'>Cancel</a></p>
+</form>
+
+{% endblock %}
