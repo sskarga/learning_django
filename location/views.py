@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -25,16 +24,6 @@ class List(ListView):
     """
     model = Address
     paginate_by = 25
-
-    """
-    def get_queryset(self):
-        if ('id' in self.kwargs) and (int(self.kwargs['id']) > 0):
-            q = Address.objects.filter(parent_id=self.kwargs['id'])
-        else:
-            q = Address.objects.filter(level=0)
-
-        return q
-    """
 
     def get_context_data(self, **kwargs):
         context = super(List, self).get_context_data(**kwargs)

@@ -8,7 +8,7 @@ class Address(MPTTModel):
         Class that manages the address model fields
     """
     name = models.CharField(max_length=50)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, related_name='children')
 
     def __str__(self):
         return self.name

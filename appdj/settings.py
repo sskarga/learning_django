@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # App catalog location
     'location',
+    'equipments',
 ]
 
 MIDDLEWARE = [
