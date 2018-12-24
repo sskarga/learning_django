@@ -8,4 +8,5 @@ urlpatterns = [
     path('type/', views.TypeList.as_view(), name='type-list'),
     path('state/', views.StateList.as_view(), name='state-list'),
     path('model/', views.ModelList.as_view(), name='model-list'),
+    path('lan/', views.LanList.as_view(), name='lan-list'),
 ]

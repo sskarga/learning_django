@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}List of Equipments - {{ block.super }}{% endblock %}
+{% block body %}
+<h1>List of Equipments</h1>
+<hr/>
+<a href="#">[ Create ]</a>
+<br/>
+<table>
+        <tr>
+            <th>Name</th>
+            <th>Model</th>
+            <th>State</th>
+            <th>Vlans</th>
+            <th>Location</th>
+            <th>IP address</th>
+            <th>MAC</th>
+            <th>Serial</th>
+            <th>Date</th>
+            <th>Note</th>
+            <th>Actions</th>
+        </tr>
+    {% for obj in object_list %}
+        <tr>
+            <td>{{ obj.name }}</td>
+            <td>{{ obj.equipments_model.name }}</td>
+            <td>{{ obj.equipments_state.name }}</td>
+            <td><a href="{% url 'equipments:lan-list' %}?location_id={{ obj.location_id }}">Show vlan</a></td>
+            <td><a href="{% url 'location:list' obj.location.parent_id %}">{{ obj.location.name }}</a> под. {{ obj.adr_entrance }}, этаж {{ obj.adr_floor }}</td>
+            <td>{{ obj.ip_address }}</td>
+            <td>{{ obj.mac_adr }}</td>
+            <td>{{ obj.serial }}</td>
+            <td>{{ obj.create_at }}</td>
+            <td>Note</td>
+            <td>  
+                <a href="#">Update</a> |
+                <a href="#">Delete</a>
+            </td>
+        </tr>    
+    {% endfor %}
+    </table>
+
+{% if is_paginated %}
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in paginator.page_range %}
+        {% if page_obj.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+{% endif %}
+
+{% endblock %}

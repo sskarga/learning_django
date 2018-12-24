@@ -1,12 +1,13 @@
 from django.db import models
+from location.models import Address
 
 class Lan(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50)
 
     # Address
-    adr_id_city = models.IntegerField()
-    adr_id_street = models.IntegerField()
-    adr_id_home = models.IntegerField()
+    # adr_id_city = models.ForeignKey(Address, on_delete=models.DO_NOTHING)  # models.IntegerField()
+    # adr_id_street = models.ForeignKey(Address, on_delete=models.DO_NOTHING)  # models.IntegerField()
+    location = models.ForeignKey(Address, on_delete=models.DO_NOTHING)  # models.IntegerField()
 
     #Config
     vlan = models.PositiveSmallIntegerField()
@@ -45,13 +46,11 @@ class Equipments(models.Model):
     # Link
     equipments_model = models.ForeignKey(Equipments_Model, on_delete=models.PROTECT)
     equipments_state = models.ForeignKey(Equipments_State, on_delete=models.DO_NOTHING)
-    lan = models.ForeignKey(Lan, on_delete=models.DO_NOTHING)
+    
     # Address
-    adr_id_city = models.IntegerField()
-    adr_id_street = models.IntegerField()
-    adr_id_home = models.IntegerField()
-    adr_entrance = models.SmallIntegerField()
-    adr_floor = models.SmallIntegerField()
+    location = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
+    adr_entrance = models.SmallIntegerField(blank=True, null=True)
+    adr_floor = models.SmallIntegerField(blank=True, null=True)
 
     # Hard config
     ip_address = models.GenericIPAddressField(blank=True, null=True, protocol='IPv4')
@@ -59,9 +58,9 @@ class Equipments(models.Model):
     serial = models.CharField(max_length=50, unique=True)
 
     # Other
-    note = models.CharField(max_length=200, blank=True)
+    note = models.CharField(max_length=200, blank=True, null=True,)
 
-    create_at = models.DateTimeField(auto_created=True)
+    create_at = models.DateTimeField(blank=True, null=True, auto_created=True)
 
 
 class Port_State(models.Model):

@@ -35,7 +35,7 @@ class List(ListView):
             q = Address.objects.filter(parent_id=self.kwargs['id'])
             pr = Address.objects.get(id=self.kwargs['id'])
 
-            for parent in pr.get_ancestors(ascending=True, include_self=False):  # ascending=False,
+            for parent in pr.get_ancestors(ascending=False, include_self=False):  # ascending=False,
                 parents.append({'id': parent.id, 'name': parent.name})
 
             parents.append({'id': pr.id, 'name': pr.name})

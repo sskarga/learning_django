@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}List of Lan - {{ block.super }}{% endblock %}
+{% block body %}
+<h1>List of Lan</h1>
+<hr/>
+<a href="#">[ Create ]</a>
+<br/>
+<table>
+        <tr>
+            <th>Name</th>
+            <th>Vlan ID</th>
+            <th>Network</th>
+            <th>Gateway</th>
+            <th>Location</th>
+            <th>Action</th>
+        </tr>
+    {% for obj in object_list %}
+        <tr>
+            <td>{{ obj.name }}</td>
+            <td>{{ obj.vlan }}</td>
+            <td>{{ obj.network }}/{{ obj.netmask }}</td>
+            <td>{{ obj.gateway }}</td>
+            <td>
+                <a href="{% url 'equipments:home' %}?location_id={{ obj.location_id }}">Equipments</a> |
+                <a href="{% url 'location:list' obj.location.parent_id %}">to location {{ obj.location.name }}</a>
+            </td>
+            <td>  
+                <a href="#">Update</a> |
+                <a href="#">Delete</a>
+            </td>
+        </tr>    
+    {% endfor %}
+    </table>
+
+{% if is_paginated %}
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in paginator.page_range %}
+        {% if page_obj.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+{% endif %}
+
+{% endblock %}

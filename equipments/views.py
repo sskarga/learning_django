@@ -16,9 +16,11 @@ from django.core.paginator import (
 )
 
 from .models import (
+    Equipments,
     Equipments_Type,
     Equipments_State,
     Equipments_Model,
+    Lan,
 )
 
 # Type
@@ -37,6 +39,43 @@ class ModelList(ListView):
     queryset = Equipments_Model.objects.all() 
     paginate_by = 25
 
+# Lan
+class LanList(ListView):
+    template_name = 'equipments/lan/list.html'
+    model = Lan
+    # queryset = Lan.objects.all() 
+    paginate_by = 25
+
+    def get_queryset(self):
+
+        location_id = self.request.GET.get('location_id')
+        
+        if location_id is None:
+            object_list = self.model.objects.all()
+        else:
+            object_list = self.model.objects.filter(location_id = int(location_id))
+        return object_list
+
 # Equipments
 class EquipmentsList(ListView):
-    pass
+    template_name = 'equipments/list.html'
+    model = Equipments
+    paginate_by = 25
+
+    def get_queryset(self):
+        object_list = self.model.objects.all()
+
+        _id = self.request.GET.get('id')
+        location_id = self.request.GET.get('location_id') 
+        vlan_id = self.request.GET.get('vlan_id')
+            
+        if not (location_id is None):
+            object_list = self.model.objects.filter(location_id = int(location_id))
+        
+        if not (vlan_id is None):    
+            object_list = self.model.objects.filter(vlan_id = int(vlan_id))
+        
+        if not (_id is None):    
+            object_list = self.model.objects.filter(id = int(_id))
+
+        return object_list
