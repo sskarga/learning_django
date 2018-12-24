@@ -18,6 +18,9 @@ class Lan(models.Model):
 class Equipments_Type(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.name
+
 # State equipment. Example: in line, not work, new or other
 class Equipments_State(models.Model):
     name = models.CharField(max_length=50, unique=True)

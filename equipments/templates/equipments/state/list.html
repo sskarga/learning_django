@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}State of Type - {{ block.super }}{% endblock %}
+{% block body %}
+<h1>List of state</h1>
+
+<table>
+        <tr>
+            <th>State</th>
+            <th>Action</th>
+        </tr>
+    {% for obj in object_list %}
+        <tr>
+            <td>{{ obj.name }}</td>
+            <td>
+                <a href="#">Update</a> |
+                <a href="#">Delete</a>
+            </td>  
+        </tr>    
+    {% endfor %}
+    </table>
+
+{% endblock %}

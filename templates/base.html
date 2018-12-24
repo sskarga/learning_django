@@ -4,18 +4,61 @@
     <meta charset="UTF-8">
     <title>{% block title %} DjangoApp {% endblock %}</title>
     <style>
+    body {
+    margin: 0;
+    }
+
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    }
+
+    li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+    }
+
+    li a.active {
+    background-color: #4CAF50;
+    color: white;
+    }
+
+    li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+    }
+
     table {
         margin: 1em 0;
     }
     table, th, td {
       border: 1px solid black;
+      padding: 0 .5em;
       border-collapse: collapse;
     }
     </style>
 </head>
 <body>
-  {% block body %}
-      Base - body
-  {% endblock %}
+    <ul>
+        <li><a class="active" href="127.0.0.1:8000">Home</a></li>
+        <li><a href="/location/">Location</a></li>
+        <li><a href="/equipments/">Equipments</a></li>
+        <li><a href="/equipments/type/">- Type</a></li>
+        <li><a href="/equipments/state/">- State</a></li>
+        <li><a href="/equipments/model/">- Model</a></li>
+    </ul>
+    <div style="margin-left:200px;padding:1px 16px;">
+        {% block body %}
+            Base - body
+        {% endblock %}
+    </div>
 </body>
 </html>

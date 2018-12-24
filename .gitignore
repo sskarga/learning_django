@@ -2,6 +2,9 @@
 # Created by https://www.gitignore.io/api/django,reactnative,pycharm+all
 # Edit at https://www.gitignore.io/?templates=django,reactnative,pycharm+all
 
+### VS Code ###
+.vscode/
+
 ### Django ###
 *.log
 *.pot
