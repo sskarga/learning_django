@@ -17,26 +17,27 @@ from django.core.paginator import (
 
 from .models import (
     Equipments,
-    Equipments_Type,
-    Equipments_State,
-    Equipments_Model,
+    EType,
+    EState,
+    EModel,
     Lan,
+    Port,
 )
 
 # Type
 class TypeList(ListView):
     template_name = 'equipments/type/list.html'
-    queryset = Equipments_Type.objects.all()
+    queryset = EType.objects.all()
 
 # State
 class StateList(ListView):
     template_name = 'equipments/state/list.html'
-    queryset = Equipments_State.objects.all()    
+    queryset = EState.objects.all()    
 
 # Model
 class ModelList(ListView):
     template_name = 'equipments/model/list.html'
-    queryset = Equipments_Model.objects.all() 
+    queryset = EModel.objects.all() 
     paginate_by = 25
 
 # Lan
@@ -79,3 +80,10 @@ class EquipmentsList(ListView):
             object_list = self.model.objects.filter(id = int(_id))
 
         return object_list
+
+class PortList(ListView):
+    template_name = 'equipments/port/list.html'
+    model = Port
+
+    def get_queryset(self):
+        return self.model.objects.filter(equipments_id=self.kwargs['id'])

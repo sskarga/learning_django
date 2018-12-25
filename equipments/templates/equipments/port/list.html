@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}List of Port - {{ block.super }}{% endblock %}
+{% block body %}
+<h1>List of Port</h1>
+<hr/>
+<a href="#">[ Create ]</a>
+<br/>
+<table>
+        <tr>
+            <th>Port number</th>
+            <th>ip</th>
+            <th>enabled</th>
+            <th>Equipments</th>
+            <th>Action</th>
+        </tr>
+    {% for obj in object_list %}
+        <tr>
+            <td>{{ obj.port_number }}</td>
+            <td>{{ obj.ip }}</td>
+            <td>{{ obj.enabled }}</td>
+            <td><a href="{% url 'equipments:home' %}?id={{ obj.equipments_id }}">Show {{ obj.equipments.name }}</a></td>
+            <td>  
+                <a href="#">Update</a> |
+                <a href="#">Delete</a>
+            </td>
+        </tr>    
+    {% endfor %}
+    </table>
+
+{% endblock %}

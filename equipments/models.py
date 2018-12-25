@@ -12,26 +12,26 @@ class Lan(models.Model):
     #Config
     vlan = models.PositiveSmallIntegerField()
     network = models.GenericIPAddressField(protocol='IPv4')
-    netmask = models.PositiveSmallIntegerField()
+    netmask = models.PositiveSmallIntegerField(default=24)
     gateway = models.GenericIPAddressField(protocol='IPv4')
 
 # TYpe equipment. Example: Switch, Router or other
-class Equipments_Type(models.Model):
+class EType(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 # State equipment. Example: in line, not work, new or other
-class Equipments_State(models.Model):
+class EState(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
 
-class Equipments_Model(models.Model):
+class EModel(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
     # Link
-    type = models.ForeignKey(Equipments_Type, on_delete=models.PROTECT)
+    type = models.ForeignKey(EType, on_delete=models.PROTECT)
 
     # Port ranges allocated to users
     userport_start = models.PositiveSmallIntegerField()
@@ -44,8 +44,8 @@ class Equipments(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
     # Link
-    equipments_model = models.ForeignKey(Equipments_Model, on_delete=models.PROTECT)
-    equipments_state = models.ForeignKey(Equipments_State, on_delete=models.DO_NOTHING)
+    emodel = models.ForeignKey(EModel, on_delete=models.PROTECT)
+    estate = models.ForeignKey(EState, on_delete=models.DO_NOTHING)
     
     # Address
     location = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
@@ -53,8 +53,8 @@ class Equipments(models.Model):
     adr_floor = models.SmallIntegerField(blank=True, null=True)
 
     # Hard config
-    ip_address = models.GenericIPAddressField(blank=True, null=True, protocol='IPv4')
-    mac_adr = models.CharField(max_length=20, unique=True)
+    ip = models.GenericIPAddressField(blank=True, null=True, protocol='IPv4')
+    mac = models.CharField(max_length=20, unique=True)
     serial = models.CharField(max_length=50, unique=True)
 
     # Other
@@ -63,17 +63,12 @@ class Equipments(models.Model):
     create_at = models.DateTimeField(blank=True, null=True, auto_created=True)
 
 
-class Port_State(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-
-
-class Equipments_Port(models.Model):
-    num_port = models.PositiveSmallIntegerField()
-    ip_address = models.GenericIPAddressField(protocol='IPv4')
+class Port(models.Model):
+    port_number = models.PositiveSmallIntegerField()
+    ip = models.GenericIPAddressField(protocol='IPv4', blank=True, null=True)
+    enabled = models.BooleanField(default=True)
 
     # Link
-    equipments_port = models.ForeignKey(Equipments, on_delete=models.PROTECT)
-    port_state = models.ForeignKey(Port_State, on_delete=models.DO_NOTHING)
-    lan = models.ForeignKey(Lan, on_delete=models.DO_NOTHING)
+    equipments = models.ForeignKey(Equipments, on_delete=models.PROTECT)
 
 
