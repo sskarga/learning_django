@@ -18,7 +18,10 @@
             <td>{{ obj.port_number }}</td>
             <td>{{ obj.ip }}</td>
             <td>{{ obj.enabled }}</td>
-            <td><a href="{% url 'equipments:home' %}?id={{ obj.equipments_id }}">Show {{ obj.equipments.name }}</a></td>
+            <td>
+                <a href="{% url 'equipments:home' %}?id={{ obj.equipments_id }}">Show</a> |
+                <a href="{% url 'equipments:lan-list' %}?id={{ obj.lan_id }}">Show vlan</a>
+            </td> 
             <td>  
                 <a href="#">Update</a> |
                 <a href="#">Delete</a>

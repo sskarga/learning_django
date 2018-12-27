@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -23,7 +25,7 @@ class List(ListView):
     Class that lists the Address objects.
     """
     model = Address
-    paginate_by = 25
+    paginate = 25
 
     def get_context_data(self, **kwargs):
         context = super(List, self).get_context_data(**kwargs)
@@ -39,12 +41,13 @@ class List(ListView):
                 parents.append({'id': parent.id, 'name': parent.name})
 
             parents.append({'id': pr.id, 'name': pr.name})
+            
 
         else:
             q = Address.objects.filter(level=0)
 
         # Pagination
-        paginator = Paginator(q, self.paginate_by)
+        paginator = Paginator(q, self.paginate)
         page = self.request.GET.get('page')
 
         try:
@@ -53,11 +56,9 @@ class List(ListView):
             adr = paginator.page(1)
         except EmptyPage:
             adr = paginator.page(paginator.num_pages)
-
-        # Context
+        
         context['object_list'] = adr
-        context['paginator'] = adr.paginator
-        context['parent'] = parents[-1]
+        context['parent'] = parents[-1]      
         context['parents'] = parents
         return context
 
@@ -76,9 +77,16 @@ class Create(CreateView):
         self.success_url = reverse_lazy('location:list', kwargs={'id': parent_id})
 
         initial.update({
-                    'parent':parent_id,
+                    'parent_id':parent_id,
                         })
         return initial
+
+    def form_valid(self, form):
+        adr = form.save(commit=False)
+        pid = self.request.POST.get('parent_id', '')
+        adr.parent_id = pid
+        adr.save()
+        return redirect('location:list', id=pid)
 
 
 

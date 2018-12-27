@@ -26,7 +26,7 @@
             <td>{{ obj.emodel.name }}</td>
             <td>{{ obj.estate.name }}</td>
             <td><a href="{% url 'equipments:port-list' obj.id %}">Show ports</a></td>
-            <td><a href="{% url 'equipments:lan-list' %}?location_id={{ obj.location_id }}">Show vlan</a></td>
+            <td><a href="{% url 'equipments:lan-list' %}?equipments_id={{ obj.id }}">Show vlan</a></td>
             <td><a href="{% url 'location:list' obj.location.parent_id %}">{{ obj.location.name }}</a> под. {{ obj.adr_entrance }}, этаж {{ obj.adr_floor }}</td>
             <td>{{ obj.ip }}</td>
             <td>{{ obj.mac }}</td>

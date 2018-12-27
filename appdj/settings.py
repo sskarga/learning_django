@@ -31,6 +31,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # The general purpose templates 
+    # https://django-adminlte2.readthedocs.io/en/latest/index.html
+    'django_adminlte',
+
+    # Optional: Skin for the admin interface
+    'django_adminlte_theme',
+
+    # Any apps which need to have their templates overridden by adminlte
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

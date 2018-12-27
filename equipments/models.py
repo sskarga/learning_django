@@ -4,16 +4,14 @@ from location.models import Address
 class Lan(models.Model):
     name = models.CharField(max_length=50)
 
-    # Address
-    # adr_id_city = models.ForeignKey(Address, on_delete=models.DO_NOTHING)  # models.IntegerField()
-    # adr_id_street = models.ForeignKey(Address, on_delete=models.DO_NOTHING)  # models.IntegerField()
-    location = models.ForeignKey(Address, on_delete=models.DO_NOTHING)  # models.IntegerField()
-
     #Config
     vlan = models.PositiveSmallIntegerField()
     network = models.GenericIPAddressField(protocol='IPv4')
     netmask = models.PositiveSmallIntegerField(default=24)
     gateway = models.GenericIPAddressField(protocol='IPv4')
+
+    def __str__(self):
+        return self.name
 
 # TYpe equipment. Example: Switch, Router or other
 class EType(models.Model):
@@ -24,7 +22,27 @@ class EType(models.Model):
 
 # State equipment. Example: in line, not work, new or other
 class EState(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    WAREHOUSE_NEW = 'WN'
+    WAREHOUSE_USED = 'WU'
+    WAREHOUSE_BROKEN = 'WB'
+    INSTALLED = 'I'
+    UNDER_REPAIT = 'UR'
+    WRITEN_OFF = 'WO'
+
+    STATE_CHOICES = (
+        (WAREHOUSE_NEW, 'Склад (новое)' ),
+        (WAREHOUSE_USED, 'Склад (б/у)' ),
+        (WAREHOUSE_BROKEN, 'Склад (сломано)' ),
+        (INSTALLED, 'Установлено' ),
+        (UNDER_REPAIT, 'В ремонте' ),
+        (WRITEN_OFF, 'Списано' ),
+    )
+
+    name = models.CharField(
+            max_length=2, 
+            choices = STATE_CHOICES,
+            default = WAREHOUSE_NEW,
+        )
 
 
 class EModel(models.Model):
@@ -38,6 +56,9 @@ class EModel(models.Model):
     userport_end = models.PositiveSmallIntegerField()
 
     note = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Equipments(models.Model):
@@ -62,6 +83,15 @@ class Equipments(models.Model):
 
     create_at = models.DateTimeField(blank=True, null=True, auto_created=True)
 
+    def __str__(self):
+        return self.name
+
+
+class Catalog_Lan(models.Model):
+    # Link
+    lan = models.ForeignKey(Lan, on_delete=models.DO_NOTHING)
+    equipments = models.ForeignKey(Equipments, on_delete=models.DO_NOTHING)
+
 
 class Port(models.Model):
     port_number = models.PositiveSmallIntegerField()
@@ -70,5 +100,9 @@ class Port(models.Model):
 
     # Link
     equipments = models.ForeignKey(Equipments, on_delete=models.PROTECT)
+    lan = models.ForeignKey(Lan, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return "port {0}".format(self.port_number)
 
 

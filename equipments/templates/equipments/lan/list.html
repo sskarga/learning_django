@@ -11,7 +11,7 @@
             <th>Vlan ID</th>
             <th>Network</th>
             <th>Gateway</th>
-            <th>Location</th>
+            <th>Equipments</th>
             <th>Action</th>
         </tr>
     {% for obj in object_list %}
@@ -21,8 +21,7 @@
             <td>{{ obj.network }}/{{ obj.netmask }}</td>
             <td>{{ obj.gateway }}</td>
             <td>
-                <a href="{% url 'equipments:home' %}?location_id={{ obj.location_id }}">Equipments</a> |
-                <a href="{% url 'location:list' obj.location.parent_id %}">to location {{ obj.location.name }}</a>
+              <a href="{% url 'equipments:home' %}?vlan_id={{ obj.id }}">Show</a> 
             </td>
             <td>  
                 <a href="#">Update</a> |

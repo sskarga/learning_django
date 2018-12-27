@@ -1,12 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Delete Address - {{ block.super }}{% endblock %}
-{% block body %}
-<h1>Delete Address</h1>
+{% block title %}Удаления адреса - {{ block.super }}{% endblock %}
 
-<form action='.' method='POST'>{% csrf_token %}
-    <h1>Do you want to delete the loacation "{{ object.name }}"?</h1>
-    <p><input type='submit' value='Yes' />  <a href='../../'>Cancel</a></p>
+{% block page_name %}Удаления адреса{% endblock %}
 
+{% block content %}
+
+<div class="box box-solid box-danger">
+    <div class="box-header with-border">
+      <h3 class="box-title">Удалить адрес?</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->  
+      <form action='.' method='POST'>
+            <div class="box-body">
+                {% csrf_token %}
+                <h3>Удалить адрес "{{ object.name }}" из cправочника?</h3>
+    <div class="box-footer">
+            <div class="pull-right">
+                <button class="btn btn-danger" type="submit" value='Yes'>Удалить</button>
+                <a class="btn btn-warning" href="{% url 'location:list' %}">Отменить</a>
+            </div>
+        </div>
+    </div><!-- /.box-body -->
 </form>
+</div>
 
 {% endblock %}
