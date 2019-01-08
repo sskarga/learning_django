@@ -40,14 +40,11 @@
                 <div class="box-footer">
                     <div class="pull-right">
                         <button type="submit" class="btn btn-success">Добавить</button>
-                        <a class="btn btn-warning" href="{% url 'location:list' %}">Отменить</a>
+                        <a class="btn btn-warning" onClick="javascript:history.go(-1);">Отменить</a>
                     </div>
                 </div>
             </div><!-- /.box-body -->
         </form>
   </div>
-
-
-
 
 {% endblock %}

@@ -1,5 +1,7 @@
 from django.db import models
 from location.models import Address
+from .choices import *
+
 
 class Lan(models.Model):
     name = models.CharField(max_length=50)
@@ -7,11 +9,12 @@ class Lan(models.Model):
     #Config
     vlan = models.PositiveSmallIntegerField()
     network = models.GenericIPAddressField(protocol='IPv4')
-    netmask = models.PositiveSmallIntegerField(default=24)
+    netmask = models.IntegerField(choices=NETMASK_CHOICES, default=24)
     gateway = models.GenericIPAddressField(protocol='IPv4')
 
     def __str__(self):
         return self.name
+
 
 # TYpe equipment. Example: Switch, Router or other
 class EType(models.Model):
@@ -19,30 +22,6 @@ class EType(models.Model):
 
     def __str__(self):
         return self.name
-
-# State equipment. Example: in line, not work, new or other
-class EState(models.Model):
-    WAREHOUSE_NEW = 'WN'
-    WAREHOUSE_USED = 'WU'
-    WAREHOUSE_BROKEN = 'WB'
-    INSTALLED = 'I'
-    UNDER_REPAIT = 'UR'
-    WRITEN_OFF = 'WO'
-
-    STATE_CHOICES = (
-        (WAREHOUSE_NEW, 'Склад (новое)' ),
-        (WAREHOUSE_USED, 'Склад (б/у)' ),
-        (WAREHOUSE_BROKEN, 'Склад (сломано)' ),
-        (INSTALLED, 'Установлено' ),
-        (UNDER_REPAIT, 'В ремонте' ),
-        (WRITEN_OFF, 'Списано' ),
-    )
-
-    name = models.CharField(
-            max_length=2, 
-            choices = STATE_CHOICES,
-            default = WAREHOUSE_NEW,
-        )
 
 
 class EModel(models.Model):
@@ -64,9 +43,14 @@ class EModel(models.Model):
 class Equipments(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
+    estate = models.CharField(
+        max_length=2,
+        choices=STATE_CHOICES,
+        default=WAREHOUSE_NEW,
+    )
+
     # Link
     emodel = models.ForeignKey(EModel, on_delete=models.PROTECT)
-    estate = models.ForeignKey(EState, on_delete=models.DO_NOTHING)
     
     # Address
     location = models.ForeignKey(Address, on_delete=models.DO_NOTHING)

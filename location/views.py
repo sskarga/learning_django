@@ -1,8 +1,7 @@
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404, redirect
 
-from django.views.generic import ListView, TemplateView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views import View
+from django.views.generic.edit import DeleteView
 from django.urls import reverse_lazy
 
 from django.core.paginator import Paginator
@@ -12,38 +11,29 @@ from django.core.paginator import PageNotAnInteger
 from .models import Address
 from .forms import AdrForm
 
-# Create your views here.
-class Index(TemplateView):
-    """
-    Class that shows the start template.
-    """
-    template_name = "location/index.html"
 
-
-class List(ListView):
-    """
-    Class that lists the Address objects.
-    """
+class List(View):
+    template_name = "location/address_list.html"
     model = Address
     paginate = 25
 
-    def get_context_data(self, **kwargs):
-        context = super(List, self).get_context_data(**kwargs)
-
-        # Query bild
+    def get(self, request, *args, **kwargs):
         parents = [{'id': 0, 'name': 'root'}]
 
-        if ('id' in self.kwargs) and (int(self.kwargs['id']) > 0):
-            q = Address.objects.filter(parent_id=self.kwargs['id'])
-            pr = Address.objects.get(id=self.kwargs['id'])
+        _id = kwargs.get('id')
 
-            for parent in pr.get_ancestors(ascending=False, include_self=False):  # ascending=False,
+        if (_id is not None) and (_id > 0):
+            # Get all parents
+            q = Address.objects.filter(parent_id=_id)
+            pr = Address.objects.get(id=_id)
+
+            for parent in pr.get_ancestors(ascending=False, include_self=False):
                 parents.append({'id': parent.id, 'name': parent.name})
 
             parents.append({'id': pr.id, 'name': pr.name})
-            
 
         else:
+            # Get root tree
             q = Address.objects.filter(level=0)
 
         # Pagination
@@ -56,59 +46,72 @@ class List(ListView):
             adr = paginator.page(1)
         except EmptyPage:
             adr = paginator.page(paginator.num_pages)
-        
-        context['object_list'] = adr
-        context['parent'] = parents[-1]      
-        context['parents'] = parents
-        return context
+
+        # Context
+        context = {
+            'object_list': adr,
+            'parents': parents,
+        }
+
+        return render(request, self.template_name, context)
 
 
-class Create(CreateView):
+class Create(View):
     """
-    Class that allows you to create and save a Person object.
+        Class that allows you to new a Address object.
     """
+    template_name = "location/address_form_create.html"
     model = Address
-    form_class = AdrForm
-    success_url = reverse_lazy('location:list')
+    form = AdrForm
 
-    def get_initial(self):
-        initial = super(Create, self).get_initial()
-        parent_id = self.kwargs.get('id')
-        self.success_url = reverse_lazy('location:list', kwargs={'id': parent_id})
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {'form': self.form(),})
 
-        initial.update({
-                    'parent_id':parent_id,
-                        })
-        return initial
+    def post(self, request, *args, **kwargs):
+        form = self.form(request.POST)
+        if form.is_valid():
+            parent_id = kwargs.get('id')
 
-    def form_valid(self, form):
-        adr = form.save(commit=False)
-        pid = self.request.POST.get('parent_id', '')
-        adr.parent_id = pid
-        adr.save()
-        return redirect('location:list', id=pid)
+            model_adr = self.model()
+
+            model_adr.name = form.cleaned_data['name']
+            model_adr.parent_id = parent_id
+            model_adr.save()
+
+            return redirect('location:list', id=parent_id)
+
+        context = {"form": form}
+        return render(request, self.template_name, context)
 
 
-
-class Update(UpdateView):
+class Update(View):
     """
-    Class that allows you to update the data of a Person object.
+        Class that allows you to update a Address object.
     """
+    template_name = "location/address_form_update.html"
     model = Address
-    form_class = AdrForm
-    success_url = reverse_lazy('location:list')
+    form = AdrForm
 
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        adr = get_object_or_404(Address, id=id_)
+    def get(self, request, *args, **kwargs):
+        adr = get_object_or_404(self.model, id = kwargs.get('id'))
+        return render(request, self.template_name, {'form': self.form(initial={'name': adr.name,})})
 
-        self.success_url = reverse_lazy('location:list', kwargs={'id': adr.parent_id})
-        return adr
+    def post(self, request, *args, **kwargs):
+        form = self.form(request.POST)
+        if form.is_valid():
+            adr = get_object_or_404(self.model, id=kwargs.get('id'))
+            adr.name = form.cleaned_data['name']
+            adr.save()
+
+            return redirect('location:list', id=adr.parent_id)
+
+        context = {"form": form}
+        return render(request, self.template_name, context)
 
 
 class Delete(DeleteView):
     """
-    Class that allows you to delete a Person object.
+    Class that allows you to delete a Address object.
     """
     model = Address
     success_url = reverse_lazy('location:list')

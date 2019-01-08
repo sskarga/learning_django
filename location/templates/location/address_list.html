@@ -5,70 +5,83 @@
 
 {% block content %}
 
-<div class="box">
-  <div class="box-header with-border">
+    <div class="box">
+        <div class="box-header with-border">
 
-    {% for parent in parents %}
-      {% if parent.id == 0 %}
-        <a class="btn btn-primary" href="{% url 'location:list' %}"><i class="fa fa-th-large"></i></a>
-      {% else %}
-        <a class="btn btn-primary" href="{% url 'location:list' parent.id %}">{{ parent.name }}</a>
-      {% endif %}
-    {% endfor %}
-    <div class="box-tools pull-right">
-      <a class="btn btn-success" href="{% url 'location:create' parent.id %}"><i class="fa fa-plus"></i> Создать</a>
-    </div><!-- /.box-tools -->
-  </div>
-  <!-- /.box-header -->
-  <div class="box-body">
-    <table class="table table-bordered">
-      <tbody>
-        <tr>
-          <th class="col-sm-10">Местоположение</th>
-          <th class="col-sm-1">Найти</th>
-          <th class="col-sm-1">Действия</th>
-        </tr>
-        {% for address in object_list %}
-        <tr>
-          {% if address.level < 2 %} <td>
-            <a href="{% url 'location:list' address.id %}">{{ address.name }}</a>
-            </td>
-            <td>
-              Недоступно
-            </td>
-            {% else %}
-            <td>
-              {{ address.name }}
-            </td>
-            <td>
-              <a class="btn btn-primary" href="{% url 'equipments:home' %}?location_id={{ address.id }}"><i class="fa fa-cogs"></i></a>
-              <a class="btn btn-primary" href="#"><i class="fa fa-users"></i></a>
-            </td>
-            {% endif %}
+            {% for parent in parents %}
+                {% if parent.id == 0 %}
+                    <a class="btn btn-primary" href="{% url 'location:list' %}"><i class="fa fa-th-large"></i></a>
+                {% else %}
+                    <a class="btn btn-primary" href="{% url 'location:list' parent.id %}">{{ parent.name }}</a>
+                {% endif %}
+            {% endfor %}
 
-            <td>
-              <a class="btn btn-warning" href="{% url 'location:update' address.id %}"><i class="fa fa-edit"></i></a>
-              <a class="btn btn-danger" href="{% url 'location:delete' address.id %}"><i class="fa fa-trash-o"></i></a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td>empty</td>
-          <td>-</td>
-        </tr>
+            <div class="box-tools pull-right">
+                {% with parents|last as current_parent %}
+                    <a class="btn btn-success" href="{% url 'location:create' current_parent.id %}"><i
+                            class="fa fa-plus"></i> Создать</a>
+                {% endwith %}
 
-        {% endfor %}
+            </div><!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <th class="col-sm-10">Местоположение</th>
+                    <th class="col-sm-1">Найти</th>
+                    <th class="col-sm-1">Действия</th>
+                </tr>
+                {% for address in object_list %}
+                    <tr>
+                        {% if address.level < 2 %}
+                            <td>
+                                <a href="{% url 'location:list' address.id %}">{{ address.name }}</a>
+                            </td>
+                            <td>
+                                Недоступно
+                            </td>
+                        {% else %}
+                            <td>
+                                {{ address.name }}
+                            </td>
+                            <td>
+                                <a class="btn btn-primary" href="#">
+                                    <i class="fa fa-cogs"></i>
+                                </a>
+                                <a class="btn btn-primary" href="#"><i class="fa fa-users"></i></a>
+                            </td>
+                        {% endif %}
 
-      </tbody>
-    </table>
-  </div>
-  <!-- /.box-body -->
-  <div class="box-footer clearfix">
+                        <td>
+                            <a class="btn btn-warning" href="{% url 'location:update' address.id %}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a class="btn btn-danger" href="{% url 'location:delete' address.id %}">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td>нет записей</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
 
-  </div>
-</div>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+
+        </div>
+    </div>
 
 
-{% include "paginate.html" %}
+    {% include "paginate.html" %}
 
 {% endblock %}

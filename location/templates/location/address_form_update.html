@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Редактировать адрес - {{ block.super }}{% endblock %}
+
+{% block page_name %}Редактировать адрес{% endblock %}
+
+{% block content %}
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Редактировать адрес</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->  
+      <form class="form-horizontal" action='.' method='POST' role="form">
+            <div class="box-body">
+                {% csrf_token %}
+
+                {% for error in form.non_field_errors %}                   
+                <div class="form-group has-errors text-danger">
+                    {{error}}
+                </div>
+                {% endfor %}
+
+                {% for field in form %}
+
+                    {% if field.is_hidden %}
+                        {{field}}
+                    {% else %}
+                        <div class="form-group has-errors text-danger">
+                            {{field.errors}}
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                            <div class="col-sm-8">{{field}}</div>
+                        </div>
+                    {% endif %}
+                
+                {% endfor %}
+
+                <div class="box-footer">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a class="btn btn-warning" onClick="javascript:history.go(-1);">Отменить</a>
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+        </form>
+  </div>
+
+
+
+
+{% endblock %}

@@ -1,56 +1,64 @@
 {% extends "base.html" %}
-{% block title %}List of Lan - {{ block.super }}{% endblock %}
-{% block body %}
-<h1>List of Lan</h1>
-<hr/>
-<a href="#">[ Create ]</a>
-<br/>
-<table>
-        <tr>
-            <th>Name</th>
-            <th>Vlan ID</th>
-            <th>Network</th>
-            <th>Gateway</th>
-            <th>Equipments</th>
-            <th>Action</th>
-        </tr>
-    {% for obj in object_list %}
-        <tr>
-            <td>{{ obj.name }}</td>
-            <td>{{ obj.vlan }}</td>
-            <td>{{ obj.network }}/{{ obj.netmask }}</td>
-            <td>{{ obj.gateway }}</td>
-            <td>
-              <a href="{% url 'equipments:home' %}?vlan_id={{ obj.id }}">Show</a> 
-            </td>
-            <td>  
-                <a href="#">Update</a> |
-                <a href="#">Delete</a>
-            </td>
-        </tr>    
-    {% endfor %}
-    </table>
+{% block title %}Список сетей - {{ block.super }}{% endblock %}
 
-{% if is_paginated %}
-    <ul class="pagination">
-      {% if page_obj.has_previous %}
-        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&laquo;</span></li>
-      {% endif %}
-      {% for i in paginator.page_range %}
-        {% if page_obj.number == i %}
-          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-        {% else %}
-          <li><a href="?page={{ i }}">{{ i }}</a></li>
-        {% endif %}
-      {% endfor %}
-      {% if page_obj.has_next %}
-        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&raquo;</span></li>
-      {% endif %}
-    </ul>
-{% endif %}
+{% block content %}
+
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Список сетей</h3>
+            <div class="box-tools pull-right">
+                <a class="btn btn-sm btn-success" href="{% url 'equipments:lan-create' %}">
+                    <i class="fa fa-plus"></i> Создать
+                </a>
+            </div><!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <th class="col-sm-3">Имя сети</th>
+                    <th class="col-sm-2">Vlan ID</th>
+                    <th class="col-sm-3">Подсеть</th>
+                    <th class="col-sm-2">Шлюз</th>
+                    <th class="col-sm-2">Действия</th>
+                </tr>
+                {% for obj in object_list %}
+                    <tr>
+                        <td>
+                            {{ obj.name }}
+                        </td>
+                        <td>{{ obj.vlan }}</td>
+                        <td>{{ obj.network }}/{{ obj.netmask }}</td>
+                        <td>{{ obj.gateway }}</td>
+                        <td>
+                            <a class="btn btn-warning" href="{% url 'equipments:lan-update' obj.id %}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a class="btn btn-danger" href="{% url 'equipments:lan-delete' obj.id %}">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td>нет записей</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+
+            {% include "equipments/common/pagination.html" %}
+
+        </div>
+    </div>
 
 {% endblock %}

@@ -1,5 +1,6 @@
 from django import forms
 from .models import Address
+from django.urls import reverse
 
 
 class AdrForm(forms.ModelForm):
@@ -15,8 +16,9 @@ class AdrForm(forms.ModelForm):
         )
     )
 
-    parent_id = forms.IntegerField(widget=forms.HiddenInput)
-
     class Meta:
         model = Address
         fields = ['name']
+
+    def get_absolute_url(self):
+        return reverse("location:list", kwargs={"id": self.id})

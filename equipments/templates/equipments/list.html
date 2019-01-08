@@ -1,66 +1,71 @@
 {% extends "base.html" %}
-{% block title %}List of Equipments - {{ block.super }}{% endblock %}
-{% block body %}
-<h1>List of Equipments</h1>
-<hr/>
-<a href="#">[ Create ]</a>
-<br/>
-<table>
-        <tr>
-            <th>Name</th>
-            <th>Model</th>
-            <th>State</th>
-            <th>Ports</th>
-            <th>Vlans</th>
-            <th>Location</th>
-            <th>IP address</th>
-            <th>MAC</th>
-            <th>Serial</th>
-            <th>Date</th>
-            <th>Note</th>
-            <th>Actions</th>
-        </tr>
-    {% for obj in object_list %}
-        <tr>
-            <td>{{ obj.name }}</td>
-            <td>{{ obj.emodel.name }}</td>
-            <td>{{ obj.estate.name }}</td>
-            <td><a href="{% url 'equipments:port-list' obj.id %}">Show ports</a></td>
-            <td><a href="{% url 'equipments:lan-list' %}?equipments_id={{ obj.id }}">Show vlan</a></td>
-            <td><a href="{% url 'location:list' obj.location.parent_id %}">{{ obj.location.name }}</a> под. {{ obj.adr_entrance }}, этаж {{ obj.adr_floor }}</td>
-            <td>{{ obj.ip }}</td>
-            <td>{{ obj.mac }}</td>
-            <td>{{ obj.serial }}</td>
-            <td>{{ obj.create_at }}</td>
-            <td>Note</td>
-            <td>  
-                <a href="#">Update</a> |
-                <a href="#">Delete</a>
-            </td>
-        </tr>    
-    {% endfor %}
-    </table>
+{% block title %}Список оборудования - {{ block.super }}{% endblock %}
 
-{% if is_paginated %}
-    <ul class="pagination">
-      {% if page_obj.has_previous %}
-        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&laquo;</span></li>
-      {% endif %}
-      {% for i in paginator.page_range %}
-        {% if page_obj.number == i %}
-          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-        {% else %}
-          <li><a href="?page={{ i }}">{{ i }}</a></li>
-        {% endif %}
-      {% endfor %}
-      {% if page_obj.has_next %}
-        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&raquo;</span></li>
-      {% endif %}
-    </ul>
-{% endif %}
+{% block content %}
+
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Список оборудования</h3>
+            <div class="box-tools pull-right">
+                <a class="btn btn-sm btn-success" href="{% url 'equipments:equipments-create' %}">
+                    <i class="fa fa-plus"></i> Создать
+                </a>
+            </div><!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <th class="col-sm-2">Название</th>
+                    <th class="col-sm-2">Модель</th>
+                    <th class="col-sm-1">Состояние</th>
+                    <th class="col-sm-1">IP адрес</th>
+                    <th class="col-sm-1">MAC адрес</th>
+                    <th class="col-sm-2">Серийный номер</th>
+                    <th class="col-sm-1">Дата поступления</th>
+                    <th class="col-sm-2">Действия</th>
+                </tr>
+                {% for obj in object_list %}
+                    <tr>
+                        <td>{{ obj.name }}</td>
+                        <td>{{ obj.emodel.name }}</td>
+                        <td>{{ obj.estate }}</td>
+                        <td>{{ obj.ip }}</td>
+                        <td>{{ obj.mac }}</td>
+                        <td>{{ obj.serial }}</td>
+                        <td>{{ obj.create_at }}</td>
+                        <td>
+                            <a class="btn btn-warning" href="{% url 'equipments:equipments-update' obj.id %}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a class="btn btn-danger" href="{% url 'equipments:equipments-delete' obj.id %}">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td>нет записей</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+
+            {% include "equipments/common/pagination.html" %}
+
+        </div>
+    </div>
 
 {% endblock %}
